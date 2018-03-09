@@ -47,8 +47,12 @@ wget -O /lib/firmware/bnx2/bnx2-mips-06-6.2.3.fw https://raw.githubusercontent.c
 reboot
 uname -r
 
-su
-cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; date;
+# 设置时区
+# 方法一 更改所有用户
+sudo cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime; date;
+# 方法二 更改当前用户
+tzselect
+#然后输入GST-8是北京时间。需要根据提示将一行加入当前用户的.profile文件方能永久生效
 
 su
 ## Online, OneProvider, Kimsufi

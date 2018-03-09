@@ -42,4 +42,6 @@ cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 # 注意修改该文件中的信息
 wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/transfer.sh
 chmod +x transfer.sh
+nano transfer.sh
+
 ./transfer.sh

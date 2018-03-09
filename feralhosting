@@ -40,6 +40,9 @@ cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 # 饭盒SSD容量小，将已经完成的文件复制到另一台机器上
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # 注意修改该文件中的信息
+# B机器上操作，与饭盒对时：
+sudo ntpdate hippolytus.feralhosting.com
+# 饭盒上的操作：
 wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/transfer.sh
 chmod +x transfer.sh
 nano transfer.sh

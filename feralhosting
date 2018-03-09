@@ -23,6 +23,19 @@ htpasswd -b `find ~ -name .htpasswd` $RUT_USER $RUT_PASSWD
 wget -qO ~/install.autodl.sh https://bitbucket.org/feralio/wiki/raw/HEAD/src/wiki/software/autodl/autodl.sh && bash ~/install.autodl.sh
 # 恢复autodl-irssi的配置
 
+
+# 使上传文件到B机器的操作不需要输入密码
+# 在A机器上操作：
+# 生成密钥对
+ssh-keygen -t rsa
+# 发送公钥给B机器
+scp .ssh/id_rsa.pub $DEST_USER@$DEST_HOST:~
+# 在B机器上操作：
+mkdir -p ~/.ssh/
+touch ~/.ssh/authorized_keys
+cat ~/id_rsa.pub >> ~/.ssh/authorized_keys 
+
+
 # 饭盒SSD容量小，将已经完成的文件复制到另一台机器上
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
@@ -42,7 +55,7 @@ echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" jack@$DEST_HOST:~/GGN/
 rsync -av --progress -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DIR
 count=$[ $count+1 ]
-if [[ $count -eq 10 ]]; then
+if [[ $count -eq 2 ]]; then
   break
 fi
 done
@@ -58,14 +71,3 @@ done
 -r, --recursive 对子目录以递归模式处理。
 -t, --times 保持文件时间信息。
 -p, --perms 保持文件权限。
-
-# 解决每个传输命令都需要输入密码的问题
-# 在A机器上操作：
-# 生成密钥对
-ssh-keygen -t rsa
-# 发送公钥给B机器
-scp .ssh/id_rsa.pub $DEST_USER@$DEST_HOST:~
-# 在B机器上操作：
-mkdir -p ~/.ssh/
-touch ~/.ssh/authorized_keys
-cat ~/id_rsa.pub >> ~/.ssh/authorized_keys 

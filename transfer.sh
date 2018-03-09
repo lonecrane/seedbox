@@ -16,9 +16,9 @@ echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" $DEST_USER@$DEST_HOST:$DEST_DIR
 rsync -av --progress -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DIR
 count=$[ $count+1 ]
-if [[ $count -eq 10 ]]; then
-  break
-fi
+# if [[ $count -eq 10 ]]; then
+#  break
+# fi
 done
 
 # scp的参数

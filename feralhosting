@@ -10,7 +10,7 @@ wget -qO- bench.sh | bash
 # 登录信息在用户面板的Software中。更改默认SSH密码：
 passwd
 # 包括安装软件在内的操作只能针对用户文件夹中进行，没有sudo权限，当然更没有root密码
-# 在面板中安装deluge，并查看其默认监视文件夹为 /media/md3/yellow/private/deluge/watch/
+# 在面板中安装deluge，并查看其默认监视文件夹为 /media/md3/xxx/private/deluge/watch/
 # 在面板中安装rtorrent以后再手动覆盖安装最新版rutorrent，脚本为官方提供：
 cd ~/www/$(whoami).$(hostname -f)/public_html/
 git clone https://github.com/Novik/ruTorrent.git

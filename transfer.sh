@@ -1,7 +1,7 @@
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
 #LOCAL_DATA=/media/md3/xxx/private/deluge/data
-LOCAL_DATA=/media/md3/xxx/private/deluge/completed/
+LOCAL_DATA=/media/md3/xxx/private/deluge/completed
 LOCAL_TORR=/media/md3/xxx/private/deluge/torrents
 DEST_USER=
 DEST_HOST=
@@ -11,7 +11,8 @@ DEST_DIR='~/xxx/'
 IFS=$'\n'
 
 count=0
-for i in `ls -atr $LOCAL_DATA`;
+# 注意必须排除..目录
+for i in `ls -Atr $LOCAL_DATA`;
 do 
 echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" $DEST_USER@$DEST_HOST:$DEST_DIR

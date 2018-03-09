@@ -1,6 +1,7 @@
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
-LOCAL_DATA=/media/md3/xxx/private/deluge/data
+#LOCAL_DATA=/media/md3/xxx/private/deluge/data
+LOCAL_DATA=/media/md3/xxx/private/deluge/completed/
 LOCAL_TORR=/media/md3/xxx/private/deluge/torrents
 DEST_USER=
 DEST_HOST=

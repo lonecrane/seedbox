@@ -43,8 +43,10 @@ cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 # B机器上操作，与饭盒对时：
 sudo ntpdate hippolytus.feralhosting.com
 # 饭盒上的操作：
-wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/transfer.sh
+wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/transfer-torrent.sh
 chmod +x transfer.sh
 nano transfer.sh
 
 ./transfer.sh
+或指定最久的同步时间点，单位为分钟，默认值600
+./transfer.sh 60

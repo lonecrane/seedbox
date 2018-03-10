@@ -1,35 +1,46 @@
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
-#LOCAL_DATA=/media/md3/yellow/private/deluge/data
-LOCAL_DATA=/media/md3/yellow/private/deluge/completed
-LOCAL_TORR=/media/md3/yellow/private/deluge/torrents
-DEST_USER=jack
-DEST_HOST=195.154.233.177
+#LOCAL_DATA=/media/md3/xxx/private/deluge/data
+LOCAL_DATA=/media/md3/xxx/private/deluge/completed
+LOCAL_TORR=/media/md3/xxx/private/deluge/torrents
+LOCAL_TORR=/media/md3/xxx/.config/deluge/state/
+DEST_USER=
+DEST_HOST=
 DEST_DATA='~/GGN/'
 DEST_TORR='~/.fh-session/'
+DEFAULT_TIME=600
 
+if [ "$#" -eq "1" ]; then
+    echo "My first parameter is $1"
+    DEFAULT_TIME=$1
+fi
 
 # 使shell将文件名的空格字符当作普通字符
 IFS=$'\n'
 
 count=0
-for i in `ls -Atr $LOCAL_DATA`;
+# for i in `ls -Atr $LOCAL_DATA`;
+for i in `find $LOCAL_DATA -maxdepth 1 -mindepth 1 -mmin -$DEFAULT_TIME`;
 do 
 echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" $DEST_USER@$DEST_HOST:$DEST_DATA
-rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
+# rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
+rsync -av --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
 count=$[ $count+1 ]
 # if [[ $count -eq 1 ]]; then
-#   break
+#  break
 # fi
 done
 
+# 种子文件推迟30分钟再同步，以免两主机同时下载
 count=0
-for i in `ls -Atr $LOCAL_TORR`;
+# for i in `ls -Atr $LOCAL_TORR`;
+for i in `find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME -mmin +30 -print0 | xargs -0 ls -atr`;
 do 
 echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_TORR/$i" $DEST_USER@$DEST_HOST:$DEST_TORR
-rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_TORR/$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR
+# rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_TORR/$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR
+rsync -av --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR
 count=$[ $count+1 ]
 # if [[ $count -eq 1 ]]; then
 #   break

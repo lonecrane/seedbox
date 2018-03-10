@@ -56,6 +56,7 @@ sudo ntpdate hippolytus.feralhosting.com
 # 饭盒上的操作：
 wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/transfer-torrent.sh
 chmod +x transfer-torrent.sh
+# 修改相应的用户名和文件夹等信息
 nano transfer-torrent.sh
 
 ./transfer-torrent.sh

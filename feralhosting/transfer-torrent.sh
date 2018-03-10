@@ -1,14 +1,19 @@
+#!/bin/bash
+
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
-#LOCAL_DATA=/media/md3/xxx/private/deluge/data
-LOCAL_DATA=/media/md3/xxx/private/deluge/completed
-LOCAL_TORR=/media/md3/xxx/private/deluge/torrents
-LOCAL_TORR=/media/md3/xxx/.config/deluge/state/
 DEST_USER=
 DEST_HOST=
 DEST_DATA='~/GGN/'
 DEST_TORR='~/.fh-session/'
 DEFAULT_TIME=600
+xxx=???
+#LOCAL_DATA=/media/md3/$xxx/private/deluge/data
+LOCAL_DATA=/media/md3/$xxx/private/deluge/completed
+#LOCAL_TORR=/media/md3/$xxx/private/deluge/torrents
+#LOCAL_TORR=/media/md3/$xxx/.config/deluge/state
+LOCAL_TORR=/media/md3/$xxx/torrent/complete
+
 
 if [ "$#" -eq "1" ]; then
     echo "My first parameter is $1"

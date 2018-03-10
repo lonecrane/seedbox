@@ -24,6 +24,22 @@ htpasswd -b `find ~ -name .htpasswd` $RUT_USER $RUT_PASSWD
 wget -qO ~/install.autodl.sh https://bitbucket.org/feralio/wiki/raw/HEAD/src/wiki/software/autodl/autodl.sh && bash ~/install.autodl.sh
 # 恢复autodl-irssi的配置
 
+#!/bin/bash
+set -x
+exec >/tmp/script$$.output 2>&1
+
+torrentid=$1
+torrentname=$2
+torrentpath=$3
+echo "Torrent Details: " "$torrentname" "$torrentpath" "$torrentid"  >> /tmp/de_execute_script_111.log
+
+xxx=yellow
+SOURCE_TORR=/media/md3/$xxx/.config/deluge/state
+DEST_TORR=/media/md3/$xxx/torrent/completed
+
+echo `pwd`  >> /tmp/de_execute_script_111.log
+cp $SOURCE_TORR/$torrentid.torrent $DEST_TORR/$torrentid.torrent  >> /tmp/de_execute_script_111.log
+
 
 # 使上传文件到B机器的操作不需要输入密码
 # 在A机器上操作：

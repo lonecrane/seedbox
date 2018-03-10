@@ -1,25 +1,38 @@
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
-#LOCAL_DATA=/media/md3/xxx/private/deluge/data
-LOCAL_DATA=/media/md3/xxx/private/deluge/completed
-LOCAL_TORR=/media/md3/xxx/private/deluge/torrents
-DEST_USER=
-DEST_HOST=
-DEST_DIR='~/xxx/'
+#LOCAL_DATA=/media/md3/yellow/private/deluge/data
+LOCAL_DATA=/media/md3/yellow/private/deluge/completed
+LOCAL_TORR=/media/md3/yellow/private/deluge/torrents
+DEST_USER=jack
+DEST_HOST=195.154.233.177
+DEST_DATA='~/GGN/'
+DEST_TORR='~/.fh-session/'
+
 
 # 使shell将文件名的空格字符当作普通字符
 IFS=$'\n'
 
 count=0
-# 注意必须排除..目录
 for i in `ls -Atr $LOCAL_DATA`;
 do 
 echo "$i"
-# scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" $DEST_USER@$DEST_HOST:$DEST_DIR
-rsync -av --progress -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DIR
+# scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" $DEST_USER@$DEST_HOST:$DEST_DATA
+rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
 count=$[ $count+1 ]
-# if [[ $count -eq 10 ]]; then
-#  break
+# if [[ $count -eq 1 ]]; then
+#   break
+# fi
+done
+
+count=0
+for i in `ls -Atr $LOCAL_TORR`;
+do 
+echo "$i"
+# scp -r -p -l $[55*1024*8] "$LOCAL_TORR/$i" $DEST_USER@$DEST_HOST:$DEST_TORR
+rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_TORR/$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR
+count=$[ $count+1 ]
+# if [[ $count -eq 1 ]]; then
+#   break
 # fi
 done
 

@@ -24,23 +24,20 @@ htpasswd -b `find ~ -name .htpasswd` $RUT_USER $RUT_PASSWD
 wget -qO ~/install.autodl.sh https://bitbucket.org/feralio/wiki/raw/HEAD/src/wiki/software/autodl/autodl.sh && bash ~/install.autodl.sh
 # 恢复autodl-irssi的配置
 
-#!/bin/bash
-set -x
-exec >/tmp/script$$.output 2>&1
-
-torrentid=$1
-torrentname=$2
-torrentpath=$3
-echo "Torrent Details: " "$torrentname" "$torrentpath" "$torrentid"  >> /tmp/de_execute_script_111.log
-
-xxx=yellow
-SOURCE_TORR=/media/md3/$xxx/.config/deluge/state
-DEST_TORR=/media/md3/$xxx/torrent/completed
-
-echo `pwd`  >> /tmp/de_execute_script_111.log
-cp $SOURCE_TORR/$torrentid.torrent $DEST_TORR/$torrentid.torrent  >> /tmp/de_execute_script_111.log
+# 设置deluge，使种子完成下载时种子文件复制到特定位置以供同步
+wget -O ~/auto_exec_for_deluge.sh https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/auto_exec_for_deluge.sh
+nano auto_exec_for_deluge.sh
+# 修改其中的用户名，
+# 进入deluge->Preferences->Plug-ins，勾上Execute，
+# 然后Execute->Add->Event->Torrent Complete，Command处填入脚本的绝对路径形如
+# /media/md3/yellow/auto_exec_for_deluge.sh
+# Save->Apply->Ok
+# 然后重启deluge以使能插件
+kill "$(pgrep -fu "$(whoami)" "deluged")" && sleep 3 && deluged
 
 
+# 饭盒SSD容量小，将已经完成的文件复制到另一台机器上
+# 设置文件同步
 # 使上传文件到B机器的操作不需要输入密码
 # 在A机器上操作：
 # 生成密钥对
@@ -52,17 +49,15 @@ mkdir -p ~/.ssh/
 touch ~/.ssh/authorized_keys
 cat ~/id_rsa.pub >> ~/.ssh/authorized_keys 
 
-
-# 饭盒SSD容量小，将已经完成的文件复制到另一台机器上
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # 注意修改该文件中的信息
 # B机器上操作，与饭盒对时：
 sudo ntpdate hippolytus.feralhosting.com
 # 饭盒上的操作：
-wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/transfer-torrent.sh
-chmod +x transfer.sh
-nano transfer.sh
+wget -q ~ https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/transfer-torrent.sh
+chmod +x transfer-torrent.sh
+nano transfer-torrent.sh
 
-./transfer.sh
+./transfer-torrent.sh
 或指定最久的同步时间点，单位为分钟，默认值600
-./transfer.sh 60
+./transfer-torrent.sh 60

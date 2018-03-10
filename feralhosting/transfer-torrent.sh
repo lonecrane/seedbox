@@ -12,7 +12,7 @@ xxx=???
 LOCAL_DATA=/media/md3/$xxx/private/deluge/completed
 #LOCAL_TORR=/media/md3/$xxx/private/deluge/torrents
 #LOCAL_TORR=/media/md3/$xxx/.config/deluge/state
-LOCAL_TORR=/media/md3/$xxx/torrent/complete
+LOCAL_TORR=/media/md3/$xxx/torrent/completed
 
 
 if [ "$#" -eq "1" ]; then
@@ -37,10 +37,11 @@ count=$[ $count+1 ]
 # fi
 done
 
-# 种子文件推迟30分钟再同步，以免两主机同时下载
+# 未完成的种子文件推迟30分钟再同步，以免两主机同时下载
 count=0
 # for i in `ls -Atr $LOCAL_TORR`;
-for i in `find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME -mmin +30 -print0 | xargs -0 ls -atr`;
+# for i in `find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME -mmin +30 -print0 | xargs -0 ls -atr`;
+for i in `find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME -print0 | xargs -0 ls -atr`;
 do 
 echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_TORR/$i" $DEST_USER@$DEST_HOST:$DEST_TORR

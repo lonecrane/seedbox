@@ -1,6 +1,6 @@
 #!/bin/bash
 set -x
-exec >> ~/tmp/script-transfer-torrent-$$.output 2>&1
+#exec >> ~/tmp/script-transfer-torrent-$$.output 2>&1
 
 # 以上传方式为例，在A机器上操作，将文件上传到B机器上
 # A为LOCAL，B为DEST
@@ -30,7 +30,8 @@ IFS=$'\n'
 # 这时会出现读数据列表时，但后来读种子列表却有的情况，只发送了种子未发送数据
 # 故先读已完成种子列表再读数据列表，但要先发数据列表再发种子列表
 current_torr=`find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME`
-current_data=`find $LOCAL_DATA -maxdepth 1 -mindepth 1 -mmin -$DEFAULT_TIME`
+#current_data=`find $LOCAL_DATA -maxdepth 1 -mindepth 1 -mmin -$DEFAULT_TIME`
+current_data=`find $LOCAL_DATA -maxdepth 1 -mindepth 1`
 echo $current_torr
 echo $current_data
 
@@ -41,6 +42,7 @@ do
 echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_DATA/$i" $DEST_USER@$DEST_HOST:$DEST_DATA
 # rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_DATA/$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
+#rsync -av --rsync-path='/usr/bin/sudo /usr/bin/rsync' --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
 rsync -av --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_DATA
 count=$[ $count+1 ]
 # if [[ $count -eq 1 ]]; then
@@ -51,15 +53,15 @@ done
 # 未完成的种子文件推迟30分钟再同步，以免两主机同时下载
 count=0
 # for i in `ls -Atr $LOCAL_TORR`;
-# for i in `find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME -mmin +30 -print0 | xar$
+# for i in `find $LOCAL_TORR -maxdepth 1 -mindepth 1 -name *.torrent -mmin -$DEFAULT_TIME -mmin +30 -print0 | xargs -0 ls -atr`;
 for i in $current_torr;
 do 
 echo "$i"
 # scp -r -p -l $[55*1024*8] "$LOCAL_TORR/$i" $DEST_USER@$DEST_HOST:$DEST_TORR
 # rsync -av --progress --bwlimit=51200 -e ssh ''"$LOCAL_TORR/$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR
-rsync -av --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR_for_qb
-rsync -av --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR_for_rt
-rsync -av --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR_for_de
+rsync -v --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR_for_qb
+rsync -v --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR_for_rt
+rsync -v --progress --bwlimit=51200 -e ssh ''"$i"'' $DEST_USER@$DEST_HOST:$DEST_TORR_for_de
 count=$[ $count+1 ]
 # if [[ $count -eq 1 ]]; then
 #   break
@@ -78,4 +80,3 @@ done
 # -r, --recursive 对子目录以递归模式处理。
 # -t, --times 保持文件时间信息。
 # -p, --perms 保持文件权限。
-

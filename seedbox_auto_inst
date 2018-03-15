@@ -260,7 +260,7 @@ sudo sed -i '/gui-server-password\ =\ /c\gui-server-password = '"$adlpass"'' $HO
 
 sudo mv /var/www/html/ruTorrent/plugins/autodl-irssi/_conf.php /var/www/html/ruTorrent/plugins/autodl-irssi/conf.php
 sudo sed -i '/\$autodlPort\ =\ /c\\$autodlPort = '"$adlport"';' /var/www/html/ruTorrent/plugins/autodl-irssi/conf.php
-sudo sed -i '/\$autodlPassword\ =\ /a\\$autodlPassword = '"$adlpass"';' /var/www/html/ruTorrent/plugins/autodl-irssi/conf.php
+sudo sed -i '/\$autodlPassword\ =\ /c\\$autodlPassword = '"$adlpass"';' /var/www/html/ruTorrent/plugins/autodl-irssi/conf.php
 
 # set permissions
 sudo chown -R www-data:www-data /var/www/html/ruTorrent

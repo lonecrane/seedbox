@@ -425,6 +425,10 @@ systemctl list-unit-files | grep torrent
 #mypassword=
 
 
+# 安装deluge
+# 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
+
+
 # 安装Shadowsocks
 echo "Now install shadowsocks:"
 python --version

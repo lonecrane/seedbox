@@ -425,9 +425,6 @@ systemctl list-unit-files | grep torrent
 #mypassword=
 
 
-# 安装deluge
-# 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
-
 # 修改最大打开文件数
 # 默认值为1024
 ulimit -a
@@ -487,3 +484,18 @@ DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡�
 my_server_ip=$(ifconfig $DEFAULT_INTERFACE | grep inet | cut -d : -f 2 | cut -d " " -f 1)
 echo -n "Check your IP address : "
 echo $my_server_ip
+
+
+# 安装deluge
+# 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
+#!/bin/bash
+torrentid=$1
+torrentname=$2
+torrentpath=$3
+
+# deluge的自动运行插件
+wget https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/auto_exec_for_deluge.sh
+#再在对话框中填入脚本运行地址即可：
+/media/md3/yellow/auto_exec_for_deluge.sh
+# 自动重新开始卡壳的种子，对ipt和tl等autodl-irssi dealy时间不确定的站有用
+wget https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/auto_restart_torrent.sh

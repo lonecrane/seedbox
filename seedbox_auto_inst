@@ -493,6 +493,21 @@ echo $my_server_ip
 
 
 # 安装deluge
+# 先安装各种依赖
+sudo apt-get install python python-twisted python-openssl python-setuptools intltool python-xdg python-chardet geoip-database python-libtorrent python-notify python-pygame python-glade2 librsvg2-common xdg-utils python-mako 
+# 再安装libtorrent-rasterbar，如安装qb时已安装则可跳过
+# 开始安装主程序
+# 可跳过校验版
+wget -q https://github.com/lonecrane/BitTorrentClientCollection/blob/master/Deluge/deluge-1.3.15.skip.tar.gz
+# 原版
+wget -q http://download.deluge-torrent.org/source/deluge-1.3.15.tar.gz
+# 开始编译和安装
+tar -xvzf deluge-*.tar.gz; 
+cd deluge-*;
+python setup.py clean -a
+python setup.py build
+sudo python setup.py install
+
 # 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
 #!/bin/bash
 torrentid=$1

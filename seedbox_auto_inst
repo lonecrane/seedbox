@@ -498,11 +498,12 @@ sudo apt-get install python python-twisted python-openssl python-setuptools intl
 # 再安装libtorrent-rasterbar，如安装qb时已安装则可跳过
 # 开始安装主程序
 # 可跳过校验版
-wget -q https://github.com/lonecrane/BitTorrentClientCollection/blob/master/Deluge/deluge-1.3.15.skip.tar.gz
+wget -q https://github.com/lonecrane/BitTorrentClientCollection/raw/master/Deluge/deluge-1.3.15.skip.tar.gz
 # 原版
 wget -q http://download.deluge-torrent.org/source/deluge-1.3.15.tar.gz
 # 开始编译和安装
-tar -xvzf deluge-*.tar.gz; 
+# 此处注意多个安装包的重名问题
+tar -xvzf deluge-*.tar.gz;
 cd deluge-*;
 python setup.py clean -a
 python setup.py build

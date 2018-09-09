@@ -93,7 +93,7 @@ ifdown $DEFAULT_INTERFACE && ifup $DEFAULT_INTERFACE
 ##End
 
 sudo apt install git curl tmux
-sudp apt install libsigc++-2.0-dev # C++ compiler
+#sudo apt install libsigc++-2.0-dev # C++ compiler
 
 
 # 安装rTorrent和ruTorrent
@@ -117,7 +117,7 @@ make clean && make -j$(nproc);
 sudo make install
 cd ..
 
-sudo apt install libtool
+sudo apt install libtool automake
 git clone https://github.com/rakshasa/libtorrent.git
 cd libtorrent
 ./autogen.sh 

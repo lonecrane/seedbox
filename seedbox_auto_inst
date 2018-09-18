@@ -412,6 +412,8 @@ if [[ -z $QB_WEB_PASSWD ]]; then
   read QB_WEB_PASSWD
 fi
 
+#　配置文件
+# 1、3.x可用
 QB_WEB_PASSWD_HASH=`echo -n $QB_WEB_PASSWD | md5sum | awk '{print $1}'`;
 #sudo wget -qO $HOMEDIR/.config/qBittorrent/qBittorrent.conf https://raw.githubusercontent.com/lovewangbo/qbittorrent/master/qBittorrent.conf
 wget -qO qBittorrent.conf https://raw.githubusercontent.com/lovewangbo/seedbox/master/conf/qBittorrent.conf
@@ -422,6 +424,11 @@ sed -i 's/\(WebUI\\Password_ha1=@ByteArray(\)f6fdffe48c908deb0f4c3bd36c032e72/\1
 sudo mkdir -p $HOMEDIR/.config/qBittorrent/
 sudo mv qBittorrent.conf $HOMEDIR/.config/qBittorrent/qBittorrent.conf
 sudo chown -R "$QB_USER"."$QB_USER" $HOMEDIR/.config/
+
+# 2、4.x用上面的会导致tracker不能解析
+# 4.1.2会导致连不上web-ui，需要加上以下语句
+WebUI\Address=*
+WebUI\ServerDomains=*
 
 QB_PATH_NAME=`whereis qbittorrent-nox | awk '{print $2}'`
 #QB_PATH_NAME=$(whereis qbittorrent-nox | awk '{print $2}') #也可

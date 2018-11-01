@@ -1,0 +1,45 @@
+sudo apt install python-pip
+pip install flexget
+mkdir -p watch_torrents/qb
+mkdir -p .flexget
+
+nano .flexget/config.yml
+输入以下内容：
+tasks:
+  chdbits:
+    rss: https://chdbits.co/torrentrss.php?rows=10&med1=1&med19=1&linktype=dl&passkey=4e4a560266d8972c51049fc84d00d2df
+    accept_all: no
+    if:
+      - "'sGnb@CHDBits' in title": accept
+      #- "'CHDBits' in title": accept
+      - "'DEF' in title": reject
+    content_size:
+      min: 2048 # M
+      max: 999999 # M
+      strict: no
+    download: ~/watch_torrents/qb/
+
+测试：
+flexget --test execute
+
+正式执行：
+flexget execute
+
+正式执行并输出详细日志：
+flexget --loglevel debug execute
+
+如果flexget not found，需要添加安装目录到环境变量：
+nano .bashrc
+在最后添加一行：
+export PATH=$PATH:/home/jack/.local/bin
+保存后运行：
+source .bashrc
+
+然后查看结果：
+which flexget
+把程序所在目录添加到自动运行：
+crontab -l
+*/2 * * * * /home/jack/.local/bin/flexget execute
+
+最后在pt软件中添加种子的保存位置：
+/home/jack/watch_torrents/qb

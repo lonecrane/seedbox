@@ -92,6 +92,7 @@ DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡�
 ifdown $DEFAULT_INTERFACE && ifup $DEFAULT_INTERFACE
 ##End
 
+
 sudo apt install git curl tmux
 #sudo apt install libsigc++-2.0-dev # C++ compiler
 
@@ -117,7 +118,9 @@ make clean && make -j$(nproc);
 sudo make install
 cd ..
 
-sudo apt install libtool automake
+sudo apt-get install build-essential pkg-config \
+    libssl-dev zlib1g-dev libncurses-dev libncursesw5-dev \
+    libcppunit-dev autoconf automake libtool
 
 git clone https://github.com/rakshasa/libtorrent.git
 cd libtorrent
@@ -191,7 +194,7 @@ cd /var/www/html;
 sudo git clone https://github.com/Novik/ruTorrent.git;
 sudo chown -R $RTORRENT_USER:www-data ruTorrent/
 sudo chmod -R 770 ruTorrent/;
-sudo echo -e "\n\n[httprpc]\nenabled = yes\n[rpc]\nenabled = no"  >> /var/www/html/ruTorrent/conf/plugins.ini
+echo -e "\n\n[httprpc]\nenabled = yes\n[rpc]\nenabled = no"  | sudo tee -a /var/www/html/ruTorrent/conf/plugins.ini
 echo -n "Input Web user id to log in:"
 if [[ -z $rutorrent_user ]]; then
   read -p "Add web user account to login in rtorrent/qbittorrent:" rutorrent_user;
@@ -344,7 +347,8 @@ cd qBittorrent;
 #########
 # 最新版4.1.1各大站全支持 2018/6/19
 # 默认安装的是4.2.0alpha，需要手动指定版本
-git checkout release-4.1.2
+# git checkout release-4.1.2
+git checkout $(git tag | grep release- | sort -t _ -n -k 3 | tail -n 1)
 #########
 # 3.3.11原版本不能跳过校验，需merge若干commits
 git checkout release-3.3.11
@@ -388,10 +392,10 @@ fi
 if [[ -z $(cat /etc/passwd | grep "^$BT_USER:") ]]; then
   sudo adduser $BT_USER
   #sudo userdel $BT_USER
-  sudo usermod -s /bin/false $BT_USER
-  #sudo usermod -s /bin/bash $BT_USER
-  #或直接编辑/etc/passwd文件，将用户shell从false改成bash
 fi
+#sudo usermod -s /bin/false $BT_USER
+#sudo usermod -s /bin/bash $BT_USER
+#或直接编辑/etc/passwd文件，将用户shell从false改成bash
 
 HOMEDIR=$(cat /etc/passwd | grep "$BT_USER": | cut -d: -f6)
 QB_USER=$BT_USER
@@ -412,24 +416,25 @@ if [[ -z $QB_WEB_PASSWD ]]; then
   read QB_WEB_PASSWD
 fi
 
+
 #　配置文件
 # (1) 3.x可用
 QB_WEB_PASSWD_HASH=`echo -n $QB_WEB_PASSWD | md5sum | awk '{print $1}'`;
 #sudo wget -qO $HOMEDIR/.config/qBittorrent/qBittorrent.conf https://raw.githubusercontent.com/lovewangbo/qbittorrent/master/qBittorrent.conf
-wget -qO qBittorrent.conf https://raw.githubusercontent.com/lovewangbo/seedbox/master/conf/qBittorrent.conf
-sed -i 's@\(Downloads\\SavePath=\)\/home\/QBUSERHERE@\1'"$HOMEDIR"'@g' qBittorrent.conf
-#sed -i 's@\(WebUI\\Port=\)8080@\1'"$QB_WEB_PORT"'@g' qBittorrent.conf
-sed -i 's@\(WebUI\\Username=\)admin@\1'"$QB_WEB_USER"'@g' qBittorrent.conf
-sed -i 's/\(WebUI\\Password_ha1=@ByteArray(\)f6fdffe48c908deb0f4c3bd36c032e72/\1'"$QB_WEB_PASSWD_HASH"'/g' qBittorrent.conf
+sudo wget -qO qBittorrent.conf https://raw.githubusercontent.com/lovewangbo/seedbox/master/conf/qBittorrent.conf
+sudo sed -i 's@\(Downloads\\SavePath=\)\/home\/QBUSERHERE@\1'"$HOMEDIR"'@g' qBittorrent.conf
+#sudo sed -i 's@\(WebUI\\Port=\)8080@\1'"$QB_WEB_PORT"'@g' qBittorrent.conf
+sudo sed -i 's@\(WebUI\\Username=\)admin@\1'"$QB_WEB_USER"'@g' qBittorrent.conf
+sudo sed -i 's/\(WebUI\\Password_ha1=@ByteArray(\)f6fdffe48c908deb0f4c3bd36c032e72/\1'"$QB_WEB_PASSWD_HASH"'/g' qBittorrent.conf
 sudo mkdir -p $HOMEDIR/.config/qBittorrent/
 sudo mv qBittorrent.conf $HOMEDIR/.config/qBittorrent/qBittorrent.conf
 sudo chown -R "$QB_USER"."$QB_USER" $HOMEDIR/.config/
 
 # (2) 4.x用上面的会导致tracker不能解析等问题
-# 4.1.2默认连不上web-ui，需要加上以下语句
+# 4.1.2默认连不上web-ui，需要加上以下语句；4.1.5中无此问题
 WebUI\Address=*
 WebUI\ServerDomains=*
-# 另外，似乎需要删去server domains中的内容，*也不能留，否则不能解析tracker地址
+
 
 QB_PATH_NAME=`whereis qbittorrent-nox | awk '{print $2}'`
 #QB_PATH_NAME=$(whereis qbittorrent-nox | awk '{print $2}') #也可
@@ -484,7 +489,7 @@ sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;
 
 # 限速
-su #必须以root运行方正常工作
+su #必须以root运行方正常工作 
 
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
 tc qdisc add dev $DEFAULT_INTERFACE root tbf rate 450mbit latency 70ms burst 10kb # 正确的写法	

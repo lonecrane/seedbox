@@ -397,8 +397,8 @@ fi
 #sudo usermod -s /bin/bash $BT_USER
 #或直接编辑/etc/passwd文件，将用户shell从false改成bash
 
-HOMEDIR=$(cat /etc/passwd | grep "$BT_USER": | cut -d: -f6)
 QB_USER=$BT_USER
+HOMEDIR=$(cat /etc/passwd | grep "$BT_USER": | cut -d: -f6)
 echo $HOMEDIR
 
 echo -e "web_port  Web_user  Web_passwd"
@@ -406,6 +406,9 @@ echo -e "8080      admin     adminadmin"
 QB_WEB_PORT=
 QB_WEB_USER=
 QB_WEB_PASSWD=
+QB_WEB_PORT=7788
+QB_WEB_USER=jack
+QB_WEB_PASSWD=love654321
 if [[ -z $QB_WEB_PORT ]]; then
   read QB_WEB_PORT
 fi
@@ -487,6 +490,7 @@ mkdir -p /etc/shadowsocks;
 sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/shadowsocks.service
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;
+
 
 # 限速
 su #必须以root运行方正常工作 

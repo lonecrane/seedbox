@@ -68,6 +68,9 @@ fi
 if [[ -z $IPV6_DUID ]]; then
   read IPV6_DUID
 fi
+IPV6_ADDRESS=2001:bc8:32d7:2d00::xxx:xx:x
+IPV6_SUBNET=xx
+IPV6_DUID=00:xx:00:xx:xx:xx:xx:xx:xx:xx
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
 ./ipv6-dhclient-script.sh $DEFAULT_INTERFACE $IPV6_ADDRESS $IPV6_SUBNET $IPV6_DUID
 ping6 ipv6.google.com

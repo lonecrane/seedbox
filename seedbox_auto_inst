@@ -558,3 +558,11 @@ wget https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/aut
 /media/md3/yellow/auto_exec_for_deluge.sh
 # 自动重新开始卡壳的种子，对ipt和tl等autodl-irssi dealy时间不确定的站有用
 wget https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/auto_restart_torrent.sh
+
+
+# SSH同步文件夹
+rsync -avL -e 'ssh -p 22' --progress user@xxx.xxx.xxx.xxx:/home/jack/Downloads/Decode_done From10o/
+# 注意：
+# -p指定端口号，如不指定，默认使用22
+# IP与远程路径间的“:”号必需
+# 远程路径与本地路径末尾视需要加上"/"，加上指示子文件夹，不加指示文件夹本身。

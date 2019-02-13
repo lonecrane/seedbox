@@ -90,10 +90,19 @@ DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡�
 wget -q https://raw.githubusercontent.com/lovewangbo/ipv6-dhclient-script/master/templates/Debian/etc_network_interfaces_ikoula
 sed -e "s/{{INTERFACE}}/$DEFAULT_INTERFACE/g" -e "s/{{BLOCK_ADDR}}/$BLOCK_ADDR/g" -e "s/{{BLOCK_SUBNET}}/$BLOCK_SUBNET/g" -e "s/{{GATE_WAY}}/$GATE_WAY/g" etc_network_interfaces_ikoula
 mv etc_network_interfaces_ikoula /etc/network/interfaces
+
+# 配置完成后生效
 su
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
 ifdown $DEFAULT_INTERFACE && ifup $DEFAULT_INTERFACE
 ##End
+
+# ipv6 troubleshooting
+ping6 ipv6.google.com
+# 路由是否正常，可反映链路在何处中断
+traceroute6 ipv6.google.com
+# 检测过期时间更新是否正常，如不正常将导致一段时间后断线
+ip -6 route
 
 
 sudo apt install git curl tmux

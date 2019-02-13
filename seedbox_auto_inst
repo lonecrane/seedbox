@@ -103,6 +103,8 @@ ping6 ipv6.google.com
 traceroute6 ipv6.google.com
 # 检测过期时间更新是否正常，如不正常将导致一段时间后断线
 ip -6 route
+# 检测域名解析是否正常
+host -t AAAA google.com
 
 
 sudo apt install git curl tmux

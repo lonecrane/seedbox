@@ -526,6 +526,15 @@ vnstat -u -i $DEFAULT_INTERFACE
 vnstat -h -i $DEFAULT_INTERFACE
 #注意要在root用户下安装及查看，非root用户安装或查看数据不更新
 
+vnstat -i $DEFAULT_INTERFACE -l #实时流量情况
+vnstat -i $DEFAULT_INTERFACE -h #按小时查询流量情况
+vnstat -i $DEFAULT_INTERFACE -d #按天数查询流量情况
+vnstat -i $DEFAULT_INTERFACE -m #按月数查询流量情况
+vnstat -i $DEFAULT_INTERFACE -w #按周数查询流量情况
+vnstat -i $DEFAULT_INTERFACE -t #查询TOP10流量情况
+
+
+
 #如有需要，获取网卡名称和IP地址
 echo -n "Your possible Ethernet: "
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称

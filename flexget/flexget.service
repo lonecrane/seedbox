@@ -4,11 +4,11 @@ After=network-online.target
 
 [Service]
 Type=simple
-User=yellow
-Group=yellow
+User={{QB_USER}}
+Group={{QB_USER}}
 UMask=000
 
-WorkingDirectory=/home/yellow/.flexget
+WorkingDirectory=/home/{{QB_USER}}/.flexget
 ExecStart=/usr/local/bin/flexget daemon start
 ExecStop=/usr/local/bin/flexget daemon stop
 ExecReload=/usr/local/bin/flexget daemon reload

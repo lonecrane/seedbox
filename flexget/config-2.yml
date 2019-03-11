@@ -1,0 +1,55 @@
+web_server:
+  bind: 0.0.0.0 
+  port: 6688 
+  web_ui: yes
+  web_ui: yes
+  run_v2: yes
+
+schedules:
+  - tasks: '*' #每3分抓取所有任务
+    interval:
+      minutes: 15
+
+templates:
+  freespace:
+    free_space:
+      path: /home/jack/Downloads/
+      space: 10240
+  qb:
+    qbittorrent:
+      path: /home/jack/Downloads/
+      host: localhost
+      port: 7788
+      username: yellow
+      password: xxxxxxxx
+  size:
+    content_size:
+      min: 1000
+      max: 666666
+      strict: no
+tasks:
+  MHZ:
+    rss: https://meihezi.net
+    template:
+      - qb
+    qbittorrent:
+      maxupspeed: 10000
+      label: MHZ
+    verify_ssl_certificates: no
+    accept_all: yes
+  BTSchool:
+    rss: http://pt.btschool.net
+    template:
+      - qb
+    qbittorrent:
+      label: BTschool
+    verify_ssl_certificates: no
+    accept_all: yes
+  HDU:
+    rss: http://pt.upxin.net
+    template:
+      - qb
+    qbittorrent:
+      label: HDU
+    verify_ssl_certificates: no
+    accept_all: yes    

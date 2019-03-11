@@ -534,6 +534,13 @@ vnstat -i $DEFAULT_INTERFACE -w #按周数查询流量情况
 vnstat -i $DEFAULT_INTERFACE -t #查询TOP10流量情况
 
 
+# 安装FTP
+sudo apt install vsftpd
+sudo systemctl stop vsftpd
+nano /etc/vsftpd.conf
+取消注释write=yes
+sudo systemctl start vsftpd
+
 
 #如有需要，获取网卡名称和IP地址
 echo -n "Your possible Ethernet: "

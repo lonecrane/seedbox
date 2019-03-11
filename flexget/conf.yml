@@ -1,7 +1,0 @@
-web_server:
-  bind: 0.0.0.0
-  port: 6688
-  web_ui: yes
-  run_v2: yes
-
-tasks: no

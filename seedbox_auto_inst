@@ -420,9 +420,9 @@ echo -e "8080      admin     adminadmin"
 QB_WEB_PORT=
 QB_WEB_USER=
 QB_WEB_PASSWD=
-QB_WEB_PORT=7788
-QB_WEB_USER=jack
-QB_WEB_PASSWD=love654321
+QB_WEB_PORT=1234
+QB_WEB_USER=xxxx
+QB_WEB_PASSWD=xxxxxxx
 if [[ -z $QB_WEB_PORT ]]; then
   read QB_WEB_PORT
 fi
@@ -500,7 +500,7 @@ wget -qO shadowsocks_config.json https://raw.githubusercontent.com/lovewangbo/se
 sed -i "s@my_server_port@${my_server_port}@g" shadowsocks_config.json
 sed -i "s@mypassword@${my_server_passwd}@g" shadowsocks_config.json
 sudo mv shadowsocks_config.json /etc/shadowsocks/config.json
-mkdir -p /etc/shadowsocks;
+sufo mkdir -p /etc/shadowsocks;
 sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/shadowsocks.service
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;

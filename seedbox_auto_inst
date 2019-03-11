@@ -506,6 +506,40 @@ sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;
 
 
+
+# 安装flexget
+# pip3 install --user flexget
+# 非root用户只能安装到自己的用户目录，所以不能跨用户使用
+# root用户安装可以全局调用
+su
+pip3 install flexget
+exit
+
+cd ~/tmp
+#确定运行qb软件的账户
+if [[ -z $QB_USER ]]; then
+  read -p "Add user account to run rtorrent/qbittorrent:" QB_USER
+fi
+
+FG_USER=$QB_USER
+HOMEDIR=$(cat /etc/passwd | grep "$FG_USER": | cut -d: -f6)
+sudo mkdir $HOMEDIR/.flexget
+sudo wget -qO conf.yml https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/conf.yml
+sudo mv conf.yml $HOMEDIR/.flexget/config.yml
+sudo chown -R $FG_USER:$FG_USER $HOMEDIR/.flexget
+flexget web passwd Love321654@
+sudo wget -qO flexget.service https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/flexget.service
+sudo sed -i 's@{{BT_USER}}@'"$FG_USER"'@g' flexget.service;
+sudo mv flexget.service /etc/systemd/system/
+sudo systemctl enable flexget
+sudo systemctl start flexget
+sudo systemctl status flexget
+
+# 如果有问题，用相应账户测试：
+flexget daemon start -d
+
+
+
 # 限速
 su #必须以root运行方正常工作 
 
@@ -538,7 +572,7 @@ vnstat -i $DEFAULT_INTERFACE -t #查询TOP10流量情况
 sudo apt install vsftpd
 sudo systemctl stop vsftpd
 nano /etc/vsftpd.conf
-取消注释write=yes
+# 取消注释write=yes
 sudo systemctl start vsftpd
 
 

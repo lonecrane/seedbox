@@ -564,7 +564,8 @@ sudo systemctl status vnstat
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
 #### sudo nano /etc/vnstat.conf
 #### Interface "eno1"
-sudo sed -i "s@Interface \".\+\"@Interface \"${DEFAULT_INTERFACE}\"@g" /etc/vnstat.conf
+#sudo sed -i "s@Interface \".\+\"@Interface \"${DEFAULT_INTERFACE}\"@g" /etc/vnstat.conf
+sudo sed -i "s@Interface \".*\"@Interface \"${DEFAULT_INTERFACE}\"@g" /etc/vnstat.conf
 ### 创建数据库
 vnstat -u -i $DEFAULT_INTERFACE
 ### 启动服务

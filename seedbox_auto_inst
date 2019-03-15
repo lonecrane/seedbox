@@ -561,7 +561,10 @@ sudo systemctl stop vnstat
 sudo systemctl status vnstat
 ### 创建数据库
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
-vnstat -u -i $DEFAULT_INTERFACE
+#### 部分机器格式不同，如woothosting
+#### DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
+sudo vnstat -u -i $DEFAULT_INTERFACE
+
 ### 检查文件夹权限
 ls -al /var/lib/vnstat
 sudo chown -R vnstat:vnstat /var/lib/vnstat

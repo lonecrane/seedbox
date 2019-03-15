@@ -553,33 +553,34 @@ tc qdisc del dev $DEFAULT_INTERFACE root
 
 
 # 流量统计
-su
-apt-get install vnstat
+sudo apt-get install vnstat
 
 ## 配置
 ### 暂停服务
 sudo systemctl stop vnstat
 sudo systemctl status vnstat
-### 改为默认网卡名：
+### 创建数据库
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称
+vnstat -u -i $DEFAULT_INTERFACE
+### 检查文件夹权限
+ls -al /var/lib/vnstat
+sudo chown -R vnstat:vnstat /var/lib/vnstat
+### 改为默认网卡名：
 #### sudo nano /etc/vnstat.conf
 #### Interface "eno1"
 #sudo sed -i "s@Interface \".\+\"@Interface \"${DEFAULT_INTERFACE}\"@g" /etc/vnstat.conf
 sudo sed -i "s@Interface \".*\"@Interface \"${DEFAULT_INTERFACE}\"@g" /etc/vnstat.conf
-### 创建数据库
-vnstat -u -i $DEFAULT_INTERFACE
 ### 启动服务
 sudo systemctl start vnstat
 sudo systemctl status vnstat
 
-#注意要在root用户下安装及查看，非root用户安装或查看数据不更新？
 vnstat -i $DEFAULT_INTERFACE -l #实时流量情况
 vnstat -i $DEFAULT_INTERFACE -h #按小时查询流量情况
 vnstat -i $DEFAULT_INTERFACE -d #按天数查询流量情况
 vnstat -i $DEFAULT_INTERFACE -m #按月数查询流量情况
 vnstat -i $DEFAULT_INTERFACE -w #按周数查询流量情况
 vnstat -i $DEFAULT_INTERFACE -t #查询TOP10流量情况
-
+### 如已配置默认网卡，也可省略网卡名称
 
 # 安装FTP
 sudo apt install vsftpd

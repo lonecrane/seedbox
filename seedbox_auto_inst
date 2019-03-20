@@ -644,3 +644,14 @@ rsync -avL -e 'ssh -p 22' --progress user@xxx.xxx.xxx.xxx:/home/jack/Downloads/D
 # -p指定端口号，如不指定，默认使用22
 # IP与远程路径间的“:”号必需
 # 远程路径与本地路径末尾视需要加上"/"，加上指示子文件夹，不加指示文件夹本身。
+
+# 给账户增加和移除ssh权限（woothosting默认只有root登录）
+## 以待增加ssh权限的用户运行，生成ssh相关配置文件【未确定是否必需】
+ssh-keygen  -t  rsa
+## 修改ssh总配置
+sudo nano /etc/ssh/sshd_config
+### 附加一行开户白名单功能，仅允许用户xxxx通过ssh登录
+AllowUsers xxxx
+### 增加这一行以后root便不能ssh登录
+## 重启ssh服务
+systemctl restart sshd

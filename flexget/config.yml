@@ -4,15 +4,46 @@ web_server:
   web_ui: yes
   run_v2: yes
 
+schedules:
+  - tasks: '*' # 所有任务；若写成[myrssfeed, task_b]是myreefeed 和 task_b 两个任务
+    schedule:
+      minute: "*/3" # 每3分抓取
+    # interval:
+      # minutes: 3  # 也可用interval参数
+      # hour: 22,23 # 每日 22时和23时才抓取
+
+templates:
+  qb:
+    qbittorrent:
+      path: /home/jack/Downloads/  # 此为资源的下载目录
+      host: localhost
+      port: xxxx
+      username: jack
+      password: 9b648a74c4ccfecab84f06e2d37405ba
+    content_size:
+      min: 1000
+      max: 666666
+      strict: no  # 识别不到文件大小的时候照样下载
+    free_space:
+      path: /home/jack/Downloads/
+      space: 10240
+
 tasks: 
-  myrssfeed: 
-    rss: http://mysite.com/myfeed.rss 
-    accept_all: no 
-    if: 
-      - "'ABC' in title": accept 
-      - "'DEF' in title": reject 
-    content_size: 
-      min: 2048 
-      max: 9999 
-      strict: no 
-    download: /home/ 
+  chdbits: 
+    rss: https://chdbits.co/torrentrss.php?rows=10&cat401=1&med19=1&icat=1&ismalldescr=1&isize=1&linktype=dl&passkey=7xxxxxxxxxxxxxx
+    template:
+      - qb
+    qbittorrent:
+      maxupspeed: 100000
+      label: chdbits
+    verify_ssl_certificates: no
+    accept_all: yes
+    # download: /home/jack/Downloads/ # 种子的下载目录，需要配合监视才能实现自动下载
+    # accept_all: no 
+    # if: 
+    #   - "'ABC' in title": accept 
+    #   - "'DEF' in title": reject 
+    # content_size: 
+    #   min: 2048 
+    #   max: 9999 
+    #   strict: no 

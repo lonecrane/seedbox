@@ -24,7 +24,7 @@ templates:
       min: 1000
       max: 666666
       strict: no  # 识别不到文件大小的时候照样下载
-    free_space:
+    free_space:  # 设置路径剩余空间小于多少时停止下载，单位是MB
       path: /home/jack/Downloads/
       space: 10240
 

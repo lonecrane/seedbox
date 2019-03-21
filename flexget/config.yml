@@ -14,7 +14,7 @@ schedules:
 
 templates:
   qb:
-    qbittorrent:
+    qbittorrent:  # 直接通过web-ui方式添加，无需监视文件夹
       path: /home/jack/Downloads/  # 此为资源的下载目录
       host: localhost
       port: xxxx

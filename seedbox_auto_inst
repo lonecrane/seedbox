@@ -107,6 +107,14 @@ ip -6 route
 host -t AAAA google.com
 
 
+# 安装python3并指定为默认版本
+sudo apt update
+sudo apt install python3
+sudo apt install python3-pip
+sudo rm -rf /usr/bin/python
+sudo ln -s /usr/bin/python3 /usr/bin/python
+
+# 安装常用的软件包
 sudo apt install git curl tmux
 #sudo apt install libsigc++-2.0-dev # C++ compiler
 
@@ -511,8 +519,7 @@ sudo systemctl start shadowsocks;
 # pip3 install --user flexget
 # 非root用户只能安装到自己的用户目录，所以不能跨用户使用
 # root用户安装可以全局调用
-su
-pip3 install flexget
+sudo pip3 install flexget
 exit
 
 cd ~/tmp
@@ -524,10 +531,10 @@ fi
 FG_USER=$QB_USER
 HOMEDIR=$(cat /etc/passwd | grep "$FG_USER": | cut -d: -f6)
 sudo mkdir $HOMEDIR/.flexget
-sudo wget -qO conf.yml https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/conf.yml
+sudo wget -qO conf.yml https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/config.yml
 sudo mv conf.yml $HOMEDIR/.flexget/config.yml
 sudo chown -R $FG_USER:$FG_USER $HOMEDIR/.flexget
-flexget web passwd Love321654@
+sudo su - $FG_USER -c "flexget web passwd Love321654@"
 sudo wget -qO flexget.service https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/flexget.service
 sudo sed -i 's@{{BT_USER}}@'"$FG_USER"'@g' flexget.service;
 sudo mv flexget.service /etc/systemd/system/

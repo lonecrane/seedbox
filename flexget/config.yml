@@ -5,37 +5,48 @@ web_server:
   run_v2: yes
 
 schedules:
-  - tasks: '*' # 所有任务；若写成[myrssfeed, task_b]是myreefeed 和 task_b 两个任务
+  - tasks: [chdbits]
+  # - tasks: '*' # 所有任务
     schedule:
       minute: "*/3" # 每3分抓取
-    # interval:
-      # minutes: 3  # 也可用interval参数
+    # interval:  # 也可用interval参数
+      # minutes: 3
       # hour: 22,23 # 每日 22时和23时才抓取
 
 templates:
+  freespace:
+    free_space:
+      path: /home/jack/Downloads/
+      space: 10240
   qb:
-    qbittorrent:  # 直接通过web-ui方式添加，无需监视文件夹
-      path: /home/jack/Downloads/  # 此为资源的下载目录
+    qbittorrent:
+      path: /home/jack/Downloads/  # 模板优先级低：若task中存在与模板的重名项，生效的是task中设置
       host: localhost
       port: xxxx
-      username: jack
-      password: 9b648a74c4ccfecab84f06e2d37405ba
+      username: xxxx
+      password: xxxx
+  size1:  # 模板名可任取
     content_size:
       min: 1000
       max: 666666
       strict: no  # 识别不到文件大小的时候照样下载
-    free_space:  # 设置路径剩余空间小于多少时停止下载，单位是MB
-      path: /home/jack/Downloads/
-      space: 10240
-
-tasks: 
-  chdbits: 
-    rss: https://chdbits.co/torrentrss.php?rows=10&cat401=1&med19=1&icat=1&ismalldescr=1&isize=1&linktype=dl&passkey=7xxxxxxxxxxxxxx
-    template:
+  size2:
+    content_size:
+      min: 1024
+      max: 2048
+      strict: no  # 识别不到文件大小的时候照样下载
+tasks:
+  chdbits:
+    # rss: https://chdbits.co/torrentrss.php?rows=10&icat=1&ismalldescr=1&isize=1&iuplder=1&linktype=dl&passkey=xxxx  # 所有
+    rss: https://chdbits.co/torrentrss.php?rows=10&med19=1&icat=1&ismalldescr=1&isize=1&iuplder=1&search=chdbits&search_mode=1&linktype=dl&passkey=xxxx  # 仅含chdbits的uhd
+    template:  # 可选用多个模板
       - qb
+      - freespace
+      - size1
     qbittorrent:
       maxupspeed: 100000
       label: chdbits
+      # path: /home/jack/Downloads/chdbits/  # 优先级比模板高
     verify_ssl_certificates: no
     accept_all: yes
     # download: /home/jack/Downloads/ # 种子的下载目录，需要配合监视才能实现自动下载
@@ -47,3 +58,15 @@ tasks:
     #   min: 2048 
     #   max: 9999 
     #   strict: no 
+  ttg_for_test:
+    rss: https://totheglory.im/putrss.php?par=dnZ2MjgsNDcsNSwxMDUsNDUsNDksMjYsMTA3LDQ2LDEwNCwyOSwxMTAsMTA2LDI3LDQ0LDQzLDQ4LDMzLDMwLDMxLDUxLDUyLDUzLDU0LDEwOCwxMDksNjIsNjMsNjcsNjksNzAsNzMsNzQsNzYsNzUsODcsODgsOTksOTAsNzcsMzIsNTYsODIsODMsNTksNTcsNTgsMTAzLDYwLDEwMSw5MSw4NCw5Miw5Myw5NCw5NXx8fDIwY2Y1ODliOTk3MmUyOWUyZDIxYjE0MWY3ZGI0MDZleno=&ssl=yes
+    template:
+      - qb
+      - freespace
+      - size2
+    qbittorrent:
+      maxupspeed: 10000
+      label: ttg
+      path: /home/jack/Downloads/ttg/
+    verify_ssl_certificates: no
+    accept_all: yes

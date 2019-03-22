@@ -532,6 +532,9 @@ FG_USER=$QB_USER
 HOMEDIR=$(cat /etc/passwd | grep "$FG_USER": | cut -d: -f6)
 sudo mkdir $HOMEDIR/.flexget
 sudo wget -qO conf.yml https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/config.yml
+# 编辑文件，修改qb web ui的用户名、密码【如重试次数太多会被ban ip，需要重启qb】
+sudo nano conf.yml
+
 sudo mv conf.yml $HOMEDIR/.flexget/config.yml
 sudo chown -R $FG_USER:$FG_USER $HOMEDIR/.flexget
 sudo su - $FG_USER -c "flexget web passwd Love321654@"

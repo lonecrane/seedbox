@@ -506,8 +506,8 @@ wget -qO shadowsocks_config.json https://raw.githubusercontent.com/lovewangbo/se
 #sed -i "s@my_server_ip@${my_server_ip}@g" shadowsocks_config.json
 sed -i "s@my_server_port@${my_server_port}@g" shadowsocks_config.json
 sed -i "s@mypassword@${my_server_passwd}@g" shadowsocks_config.json
+sudo mkdir -p /etc/shadowsocks;
 sudo mv shadowsocks_config.json /etc/shadowsocks/config.json
-sufo mkdir -p /etc/shadowsocks;
 sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/shadowsocks.service
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;

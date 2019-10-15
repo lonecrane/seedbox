@@ -499,19 +499,29 @@ echo -e "8080         adminadmin"
 if [[ -z $my_server_port ]]; then
   read my_server_port
 fi
+
 if [[ -z $my_server_passwd ]]; then
   read my_server_passwd
 fi
+
 wget -qO shadowsocks_config.json https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/config.json
 #sed -i "s@my_server_ip@${my_server_ip}@g" shadowsocks_config.json
 sed -i "s@my_server_port@${my_server_port}@g" shadowsocks_config.json
+# 若passwd含有@之类的特殊字符，可能导致替换失败，需要手动确认
 sed -i "s@mypassword@${my_server_passwd}@g" shadowsocks_config.json
 sudo mkdir -p /etc/shadowsocks;
 sudo mv shadowsocks_config.json /etc/shadowsocks/config.json
 sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/shadowsocks.service
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;
+sudo systemctl status shadowsocks;
 
+# undefined symbol: EVP_CIPHER_CTX_cleanup 错误而无法启动的问题
+# 是由于在openssl 1.1.0中废弃了 EVP_CIPHER_CTX_cleanup() 函数而引入了 EVE_CIPHER_CTX_reset() 函数所导致的：
+# 因此，可以通过将 EVP_CIPHER_CTX_cleanup() 函数替换为 EVP_CIPHER_CTX_reset() 函数来解决该问题。具体解决方法如下：
+# 1、根据错误信息定位到文件 /home/feng/.local/lib/python3.6/site-packages/shadowsocks/crypto/openssl.py 。
+# 2、搜索 cleanup 并将其替换为 reset 。
+# 3、重新启动 shadowsocks, 该问题解决。
 
 
 # 安装flexget

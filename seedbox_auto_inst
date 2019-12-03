@@ -551,6 +551,10 @@ su $BT_USER
 
 # 仅测试配置文件是否正确：
 flexget --test  --loglevel debug execute
+# 单独测试一个task
+flexget execute --task chdbits_test
+# 显示详细情况以诊断
+flexget execute --task chdbits_test --dump
 # 将老种标记为已下载
 flexget execute --learn
 # 无需sudo权限运行（方便测试）：

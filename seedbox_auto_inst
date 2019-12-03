@@ -418,7 +418,6 @@ fi
 #sudo usermod -s /bin/bash $BT_USER
 #或直接编辑/etc/passwd文件，将用户shell从false改成bash
 
-QB_USER=$BT_USER
 HOMEDIR=$(cat /etc/passwd | grep "$BT_USER": | cut -d: -f6)
 echo $HOMEDIR
 
@@ -452,7 +451,7 @@ sudo sed -i 's@\(WebUI\\Username=\)admin@\1'"$QB_WEB_USER"'@g' qBittorrent.conf
 sudo sed -i 's/\(WebUI\\Password_ha1=@ByteArray(\)f6fdffe48c908deb0f4c3bd36c032e72/\1'"$QB_WEB_PASSWD_HASH"'/g' qBittorrent.conf
 sudo mkdir -p $HOMEDIR/.config/qBittorrent/
 sudo mv qBittorrent.conf $HOMEDIR/.config/qBittorrent/qBittorrent.conf
-sudo chown -R "$QB_USER"."$QB_USER" $HOMEDIR/.config/
+sudo chown -R "$BT_USER"."$BT_USER" $HOMEDIR/.config/
 
 # (2) 4.x用上面的会导致tracker不能解析等问题
 # 4.1.2默认连不上web-ui，需要加上以下语句；4.1.5中无此问题
@@ -463,7 +462,7 @@ WebUI\ServerDomains=*
 QB_PATH_NAME=`whereis qbittorrent-nox | awk '{print $2}'`
 #QB_PATH_NAME=$(whereis qbittorrent-nox | awk '{print $2}') #也可
 wget -qO qbittorrent.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/qbittorrent.service
-sed -i 's@{{QB_USER}}@'"$QB_USER"'@g' qbittorrent.service;
+sed -i 's@{{BT_USER}}@'"$BT_USER"'@g' qbittorrent.service;
 sed -i 's@{{QB_PATH_NAME}}@'"$QB_PATH_NAME"'@g' qbittorrent.service;
 sed -i 's@{{QB_WEB_PORT}}@'"$QB_WEB_PORT"'@g' qbittorrent.service;
 sudo mv qbittorrent.service /etc/systemd/system/qbittorrent.service;
@@ -524,37 +523,49 @@ sudo systemctl status shadowsocks;
 
 
 # 安装flexget
-# pip3 install --user flexget
+# sudo apt install python3-pip
 # 非root用户只能安装到自己的用户目录，所以不能跨用户使用
+# pip3 install --user flexget
 # root用户安装可以全局调用
 sudo pip3 install flexget
-exit
 
-cd ~/tmp
-#确定运行qb软件的账户
-if [[ -z $QB_USER ]]; then
-  read -p "Add user account to run rtorrent/qbittorrent:" QB_USER
+#确定运行软件的账户
+if [[ -z $BT_USER ]]; then
+  read -p "Add user account to run rtorrent/qbittorrent:" BT_USER
 fi
 
-FG_USER=$QB_USER
-HOMEDIR=$(cat /etc/passwd | grep "$FG_USER": | cut -d: -f6)
+HOMEDIR=$(cat /etc/passwd | grep "$BT_USER": | cut -d: -f6)
 sudo mkdir $HOMEDIR/.flexget
 sudo wget -qO conf.yml https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/config.yml
 # 编辑文件，修改qb web ui的用户名、密码【如重试次数太多会被ban ip，需要重启qb】
 sudo nano conf.yml
 
 sudo mv conf.yml $HOMEDIR/.flexget/config.yml
-sudo chown -R $FG_USER:$FG_USER $HOMEDIR/.flexget
-sudo su - $FG_USER -c "flexget web passwd Love321654@"
+sudo chown -R $BT_USER:$BT_USER $HOMEDIR/.flexget
+# 密码为Love321654@
+sudo su - $BT_USER -c "flexget web passwd Love321654@"
+# 调试
+# 多次安装过程都需要登录帐户实地测试和运行
+sudo usermod -s /bin/bash $BT_USER
+su $BT_USER
+
+# 仅测试配置文件是否正确：
+flexget --test  --loglevel debug execute
+# 将老种标记为已下载
+flexget execute --learn
+# 无需sudo权限运行（方便测试）：
+flexget daemon start -d
+# 修改配置后重新加载
+flexget daemon reload-config
+# ！2019-12-03在Ubuntu 18.04上安装，WEB-UI登录页面无法正常显示。
+
 sudo wget -qO flexget.service https://raw.githubusercontent.com/lonecrane/seedbox/master/flexget/flexget.service
-sudo sed -i 's@{{BT_USER}}@'"$FG_USER"'@g' flexget.service;
+sudo sed -i 's@{{BT_USER}}@'"$BT_USER"'@g' flexget.service;
 sudo mv flexget.service /etc/systemd/system/
 sudo systemctl enable flexget
 sudo systemctl start flexget
 sudo systemctl status flexget
-
-# 如果有问题，用相应账户测试：
-flexget daemon start -d
+sudo systemctl stop flexget
 
 
 

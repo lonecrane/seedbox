@@ -486,15 +486,22 @@ ulimit -a
 ulimit -n 65535
 # 注意同一session中，若用该命令改过该限值一次以后就只能往下改。如果需要往上修改，需要重新登录。
 
+
+
 # 安装Shadowsocks
 echo "Now install shadowsocks:"
+echo "Your python version is:"
 python --version
-echo "Python should be 2.6/2.7, and your python version is:"
+# python 2.x
 sudo apt-get install -y python-gevent python-pip;
 sudo pip install shadowsocks;
 sudo apt-get install -y python-m2crypto;
+# python 3.x
+sudo pip3 install shadowsocks
+sudo apt install libssl-dev swig
+pip3 install M2Crypto
+
 echo -e "server_port  passwd:"
-echo -e "8080         adminadmin"
 if [[ -z $my_server_port ]]; then
   read my_server_port
 fi
@@ -503,8 +510,9 @@ if [[ -z $my_server_passwd ]]; then
   read my_server_passwd
 fi
 
+echo -e "8080         adminadmin"
+
 wget -qO shadowsocks_config.json https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/config.json
-#sed -i "s@my_server_ip@${my_server_ip}@g" shadowsocks_config.json
 sed -i "s@my_server_port@${my_server_port}@g" shadowsocks_config.json
 # 若passwd含有@之类的特殊字符，可能导致替换失败，需要手动确认
 sed -i "s@mypassword@${my_server_passwd}@g" shadowsocks_config.json
@@ -515,7 +523,10 @@ sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubuserconte
 # 由于升级 openssl 至1.1.0以上版本导致的 shadowsocks 服务出现 undefined symbol: EVP_CIPHER_CTX_cleanup 错误而无法启动的问题
 # 这是由于在openssl 1.1.0中废弃了 EVP_CIPHER_CTX_cleanup() 函数而引入了 EVE_CIPHER_CTX_reset() 函数
 # 此时需要根据出错提示将文件名的函数恢复为原名称
+# python 2.x
 sed -i "s@EVP_CIPHER_CTX_cleanup@EVP_CIPHER_CTX_reset@g" /usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py
+# python 3.x
+sed -i "s@EVP_CIPHER_CTX_cleanup@EVP_CIPHER_CTX_reset@g" /usr/local/lib/python3.6/dist-packages/shadowsocks/crypto/openssl.py
 
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;

@@ -633,6 +633,8 @@ vnstat -i $DEFAULT_INTERFACE -t #查询TOP10流量情况
 sudo apt install vsftpd
 
 sudo systemctl stop vsftpd
+# 启用上传功能
+grep -n 'write_enable' /etc/vsftpd.conf   # 得到行号
 sudo nano /etc/vsftpd.conf
 # 取消注释write=yes
 

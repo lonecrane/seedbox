@@ -652,6 +652,21 @@ sudo systemctl start vsftpd
 sudo systemctl status vsftpd
 
 
+
+# FTP取回本地速度很慢，用HTTP服务器
+sudo apt-get install apache2
+# 更改默认端口号80为其他值如8021
+sudo nano /etc/apache2/ports.conf 
+# 相应修改
+sudo nano /etc/apache2/sites-available/000-default.conf 
+# 重启服务生效
+sudo systemctl restart apache2
+# 将含有待取回文件的目录链接到APACHE主目录下
+USER=xxx
+sudo ln -s /home/$USER/Downloads /var/www/html/Downloads
+
+
+
 #如有需要，获取网卡名称和IP地址
 echo -n "Your possible Ethernet: "
 DEFAULT_INTERFACE=`ip route get 8.8.8.8 | awk '{print $5; exit}'` #获取网卡名称

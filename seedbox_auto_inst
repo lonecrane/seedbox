@@ -629,15 +629,25 @@ vnstat -i $DEFAULT_INTERFACE -w #按周数查询流量情况
 vnstat -i $DEFAULT_INTERFACE -t #查询TOP10流量情况
 ### 如已配置默认网卡，也可省略网卡名称
 
+
+
 # 安装FTP
 sudo apt install vsftpd
 
+# 配置
 sudo systemctl stop vsftpd
-# 启用上传功能
+##  启用上传功能
 grep -n 'write_enable' /etc/vsftpd.conf   # 得到行号
 sudo nano /etc/vsftpd.conf
 # 取消注释write=yes
-
+## 更改默认端口，增强安全性
+# 在文件末尾添加一行:
+listen_port=8021
+sudo nano /etc/services
+# 找到ftp选项并将21修改成你设置的端口，本例为8021
+ftp             8021/tcp
+ftp             8021/udp          fsp fspd
+## 重启服务
 sudo systemctl start vsftpd
 sudo systemctl status vsftpd
 

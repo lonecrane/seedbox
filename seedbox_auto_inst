@@ -113,6 +113,8 @@ sudo apt install python3
 sudo apt install python3-pip
 sudo rm -rf /usr/bin/python
 sudo ln -s /usr/bin/python3 /usr/bin/python
+sudo rm -rf /usr/bin/pip
+sudo ln -s /usr/bin/pip3 /usr/bin/pip
 
 # 安装常用的软件包
 sudo apt install git curl tmux
@@ -466,7 +468,7 @@ WebUI\ServerDomains=*
 QB_PATH_NAME=`whereis qbittorrent-nox | awk '{print $2}'`
 #QB_PATH_NAME=$(whereis qbittorrent-nox | awk '{print $2}') #也可
 wget -qO qbittorrent.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/qbittorrent.service
-sed -i 's@{{BT_USER}}@'"$BT_USER"'@g' qbittorrent.service;
+sed -i 's@{{QB_USER}}@'"$BT_USER"'@g' qbittorrent.service;
 sed -i 's@{{QB_PATH_NAME}}@'"$QB_PATH_NAME"'@g' qbittorrent.service;
 sed -i 's@{{QB_WEB_PORT}}@'"$QB_WEB_PORT"'@g' qbittorrent.service;
 sudo mv qbittorrent.service /etc/systemd/system/qbittorrent.service;
@@ -475,8 +477,8 @@ sudo systemctl enable qbittorrent
 systemctl status qbittorrent
 sudo systemctl start qbittorrent
 systemctl status qbittorrent
-sudo systemctl stop qbittorrent
-sudo systemctl disable qbittorrent
+# sudo systemctl stop qbittorrent
+# sudo systemctl disable qbittorrent
 systemctl list-unit-files | grep torrent
 
 #my_server_ip=127.0.0.1
@@ -542,7 +544,7 @@ sudo systemctl status shadowsocks;
 # 非root用户只能安装到自己的用户目录，所以不能跨用户使用
 # pip3 install --user flexget
 # root用户安装可以全局调用
-sudo pip3 install flexget
+sudo pip install flexget
 
 #确定运行软件的账户
 if [[ -z $BT_USER ]]; then

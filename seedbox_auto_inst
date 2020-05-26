@@ -586,7 +586,7 @@ sudo mv flexget.service /etc/systemd/system/
 sudo systemctl enable flexget
 sudo systemctl start flexget
 sudo systemctl status flexget
-sudo systemctl stop flexget
+# sudo systemctl stop flexget
 
 
 

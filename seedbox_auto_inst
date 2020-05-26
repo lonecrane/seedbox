@@ -339,7 +339,7 @@ git checkout $(git tag | grep libtorrent-1_1_ | sort -t _ -n -k 3 | tail -n 1)
 ./autotool.sh
 ./configure -disable-debug --enable-encryption --with-libgeoip=system CXXFLAGS=-std=c++11
 # 如需安装到用户：
-./configure -disable-debug --enable-encryption --with-libgeoip=system CXXFLAGS=-std=c++11 --prefix=$HOME/.local
+# ./configure -disable-debug --enable-encryption --with-libgeoip=system CXXFLAGS=-std=c++11 --prefix=$HOME/.local
 make clean && make -j$(nproc);
 #checkinstall
 sudo make install
@@ -402,7 +402,7 @@ cat src/base/bittorrent/session.cpp | grep "qBittorrent v"
 #########
 ./configure --disable-gui;
 # 如需安装到用户目录：
-./configure --disable-gui; --prefix=$HOME/.local
+# ./configure --disable-gui; --prefix=$HOME/.local
 make clean && make -j$(nproc);
 sudo make install;
 #sudo checkinstall;

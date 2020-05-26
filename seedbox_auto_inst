@@ -55,6 +55,7 @@ tzselect
 #然后输入GST-8是北京时间。需要根据提示将一行加入当前用户的.profile文件方能永久生效
 
 su
+apt install ifupdown
 ## Online, OneProvider, Kimsufi
 git clone https://github.com/lovewangbo/ipv6-dhclient-script.git;cd ipv6-dhclient-script;chmod +x ipv6-dhclient-script.sh
 echo "IPV6_ADDRESS IPV6_SUBNET IPV6_DUID"

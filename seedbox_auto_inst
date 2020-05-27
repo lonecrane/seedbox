@@ -690,6 +690,7 @@ echo $my_server_ip
 
 
 # 安装deluge
+# (1) 原编译方式：
 # 先安装各种依赖
 sudo apt-get install python python-twisted python-openssl python-setuptools intltool python-xdg python-chardet geoip-database python-libtorrent python-notify python-pygame python-glade2 librsvg2-common xdg-utils python-mako 
 # 再安装libtorrent-rasterbar，如安装qb时已安装则可跳过
@@ -705,6 +706,12 @@ cd deluge-*;
 python setup.py clean -a
 python setup.py build
 sudo python setup.py install
+
+# (2)最新方式
+ sudo apt-get install deluged deluge-web deluge-console
+
+# 配置
+# # 允许rpc
 
 # 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
 #!/bin/bash

@@ -112,10 +112,11 @@ host -t AAAA google.com
 sudo apt update
 sudo apt install python3
 sudo apt install python3-pip
-sudo rm -rf /usr/bin/python
-sudo ln -s /usr/bin/python3 /usr/bin/python
-sudo rm -rf /usr/bin/pip
-sudo ln -s /usr/bin/pip3 /usr/bin/pip
+# 最好不要取代默认版本，发现有不少莫名其妙的软件问题（比如加载deluge的插件Itconfig）
+# sudo rm -rf /usr/bin/python
+# sudo ln -s /usr/bin/python3 /usr/bin/python
+# sudo rm -rf /usr/bin/pip
+# sudo ln -s /usr/bin/pip3 /usr/bin/pip
 
 # 安装常用的软件包
 sudo apt install git curl tmux

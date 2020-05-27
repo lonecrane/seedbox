@@ -712,6 +712,28 @@ sudo python setup.py install
 
 # 配置
 # # 允许rpc
+# # 自动启动
+BT_USER=xxx
+wget -qO deluged.service https://raw.githubusercontent.com/lonecrane/seedbox/master/deluge/deluged.service
+wget -qO deluge-web.service https://raw.githubusercontent.com/lonecrane/seedbox/master/deluge/deluge-web.service
+sed -i 's@{{QB_USER}}@'"$BT_USER"'@g' deluged.service
+sed -i 's@{{QB_USER}}@'"$BT_USER"'@g' deluge-web.service
+# cat deluged.service
+# cat deluge-web.service
+sudo mv deluged.service /etc/systemd/system/deluged.service;
+sudo mv deluge-web.service /etc/systemd/system/deluge-web.service;
+
+sudo systemctl enable deluged
+sudo systemctl start deluged
+systemctl status deluged
+# sudo systemctl stop deluged
+# sudo systemctl disable deluged
+sudo systemctl enable deluge-web
+sudo systemctl start deluge-web
+systemctl status deluge-web
+# sudo systemctl stop deluge-web
+# sudo systemctl disable deluge-web
+systemctl list-unit-files | grep deluge
 
 # 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
 #!/bin/bash

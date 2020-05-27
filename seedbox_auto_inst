@@ -708,10 +708,11 @@ python setup.py build
 sudo python setup.py install
 
 # (2)最新方式
- sudo apt-get install deluged deluge-web deluge-console
+ sudo apt-get install deluged deluge-web deluge-console deluge-client
+ # deluge-client可使flexget通过RPC方式自动加种
 
 # 配置
-# # 允许rpc
+# # 允许rpc：Preferences->Daemon->Allow Remote Connections
 # # 自动启动
 BT_USER=xxx
 wget -qO deluged.service https://raw.githubusercontent.com/lonecrane/seedbox/master/deluge/deluged.service
@@ -735,11 +736,13 @@ systemctl status deluge-web
 # sudo systemctl disable deluge-web
 systemctl list-unit-files | grep deluge
 
-# 安装ltconfig插件，并在其中修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
+# 安装ltconfig插件，在Preferences中加载egg文件，注意默认python版本必须为python2
+# # 在ltconfig中选择模式为High Performance并Load preset
+# # 并修改active_tracker_limit。如果做种3K个，就至少需要将这个值设置为3K
 #!/bin/bash
-torrentid=$1
-torrentname=$2
-torrentpath=$3
+# torrentid=$1
+# torrentname=$2
+# torrentpath=$3
 
 # deluge的自动运行插件
 wget https://raw.githubusercontent.com/lonecrane/seedbox/master/feralhosting/auto_exec_for_deluge.sh

@@ -497,6 +497,7 @@ ulimit -n 65535
 
 
 # 安装Shadowsocks
+# 以下为安装到root账号。如需安装到非root账号，要去掉和shadowsocks、libsodium相关的sudo，并在.service文件中指定运行用户
 echo "Now install shadowsocks:"
 echo "Your python version is:"
 python --version
@@ -505,9 +506,17 @@ sudo apt-get install -y python-gevent python-pip;
 sudo pip install shadowsocks;
 sudo apt-get install -y python-m2crypto;
 # python 3.x
-sudo pip3 install shadowsocks
+sudo pip3 install shadowsocks # 安装的是2.x版本
+# # 升级至3.x版。2.x版不支持等加密方式
+sudo pip install https://github.com/shadowsocks/shadowsocks/archive/master.zip -U
 sudo apt install libssl-dev swig
-pip3 install M2Crypto
+# pip3 install M2Crypto
+# 提示load libsodium failed with path None时需要安装libsodium
+wget https://download.libsodium.org/libsodium/releases/LATEST.tar.gz
+tar xf LATEST.tar.gz && cd libsodium*
+./configure && make -j$(nproc)
+sudo make install
+sudo ldconfig
 
 echo -e "server_port  passwd:"
 if [[ -z $my_server_port ]]; then
@@ -539,7 +548,7 @@ sed -i "s@EVP_CIPHER_CTX_cleanup@EVP_CIPHER_CTX_reset@g" /usr/local/lib/python3.
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;
 sudo systemctl status shadowsocks;
-
+# 如果出现问题，可运行
 
 # 安装flexget
 # sudo apt install python3-pip

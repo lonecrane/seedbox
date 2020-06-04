@@ -662,8 +662,10 @@ sudo nano /etc/vsftpd.conf
 listen_port=8021
 sudo nano /etc/services
 # 找到ftp选项并将21修改成你设置的端口，本例为8021
+grep -n "ftp" /etc/services
+# 修改：
 ftp             8021/tcp
-ftp             8021/udp          fsp fspd
+ftp             8021/udp
 ## 重启服务
 sudo systemctl start vsftpd
 sudo systemctl status vsftpd

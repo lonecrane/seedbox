@@ -506,7 +506,7 @@ sudo apt-get install -y python-gevent python-pip;
 sudo pip install shadowsocks;
 sudo apt-get install -y python-m2crypto;
 # python 3.x
-sudo pip3 install shadowsocks # 安装的是2.x版本
+# sudo pip3 install shadowsocks # 安装的仍是2.x版本
 # # 升级至3.x版。2.x版不支持等加密方式
 sudo pip install https://github.com/shadowsocks/shadowsocks/archive/master.zip -U
 sudo apt install libssl-dev swig
@@ -544,6 +544,23 @@ sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubuserconte
 sed -i "s@EVP_CIPHER_CTX_cleanup@EVP_CIPHER_CTX_reset@g" /usr/local/lib/python2.7/dist-packages/shadowsocks/crypto/openssl.py
 # python 3.x
 sed -i "s@EVP_CIPHER_CTX_cleanup@EVP_CIPHER_CTX_reset@g" /usr/local/lib/python3.6/dist-packages/shadowsocks/crypto/openssl.py
+
+# 2020.07.21成功安装，更新：
+# 在debian 10上仅作如下操作便成功：
+sudo pip install https://github.com/shadowsocks/shadowsocks/archive/master.zip -U
+# 注意本次未使用pip3，未测试可行性
+sudo apt install libssl-dev swig
+my_server_port=xxxxx
+my_server_passwd=xxxxx
+wget -qO shadowsocks_config.json https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/config.json
+   52  sed -i "s@my_server_port@${my_server_port}@g" shadowsocks_config.json
+   53  # 若passwd含有@之类的特殊字符，可能导致替换失败，需要手动确认
+   54  sed -i "s@mypassword@${my_server_passwd}@g" shadowsocks_config.json
+   55  sudo mkdir -p /etc/shadowsocks;
+   56  sudo mv shadowsocks_config.json /etc/shadowsocks/config.json
+   57  nano /etc/shadowsocks/config.json 
+   58  sudo wget -O /etc/systemd/system/shadowsocks.service https://raw.githubusercontent.com/lovewangbo/seedbox/master/templates/shadowsocks/shadowsocks.service
+
 
 sudo systemctl enable shadowsocks;
 sudo systemctl start shadowsocks;

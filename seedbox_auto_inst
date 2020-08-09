@@ -567,6 +567,25 @@ sudo systemctl start shadowsocks;
 sudo systemctl status shadowsocks;
 # 如果出现问题，可运行
 
+
+
+# 安装frp反向代理
+wget -q https://github.com/fatedier/frp/releases/download/v0.33.0/frp_0.33.0_linux_amd64.tar.gz
+tar -zxvf frp_*.tar.gz
+# 测试运行一下，看结果是否正常
+# cd frp_0.33.0_linux_amd64
+# ./frps -c ./frps.ini
+# cd ..
+mv frp_0.33.0_linux_amd64 /usr/local/bin/
+# 终极测试命令
+# /usr/local/bin/frp_0.33.0_linux_amd64/frps -c /usr/local/bin/frp_0.33.0_linux_amd64/frps.ini
+wget -q https://raw.githubusercontent.com/lonecrane/seedbox/master/templates/frp.service
+systemctl enable frp.service 
+systemctl start frp.service 
+systemctl status frp.service 
+
+
+
 # 安装flexget
 # sudo apt install python3-pip
 # 非root用户只能安装到自己的用户目录，所以不能跨用户使用

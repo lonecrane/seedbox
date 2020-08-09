@@ -1,0 +1,10 @@
+[Unit]
+Description=Frps
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/frp_0.33.0_linux_amd64/frps -c /usr/local/bin/frp_0.33.0_linux_amd64/frps.ini
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

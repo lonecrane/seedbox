@@ -11,8 +11,8 @@
   // 1\_日志设置
   "log": {
     "loglevel": "warning", // 内容从少到多: "none", "error", "warning", "info", "debug"
-    "access": "/home/vpsadmin/xray_log/access.log", // 访问记录
-    "error": "/home/vpsadmin/xray_log/error.log" // 错误记录
+    "access": "{{XRAY_LOG_PATH}}/access.log", // 访问记录
+    "error": "{{XRAY_LOG_PATH}}/error.log" // 错误记录
   },
   // 2_DNS 设置
   "dns": {
@@ -74,8 +74,8 @@
           "alpn": ["http/1.1"],
           "certificates": [
             {
-              "certificateFile": "/home/vpsadmin/xray_cert/xray.crt",
-              "keyFile": "/home/vpsadmin/xray_cert/xray.key"
+              "certificateFile": "{{CER_INSTALL_PATH}}/xray.crt",
+              "keyFile": "{{CER_INSTALL_PATH}}/xray.key"
             }
           ]
         }

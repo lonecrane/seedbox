@@ -61,7 +61,7 @@
         "decryption": "none",
         "fallbacks": [
           {
-            "dest": 80 // 默认回落到防探测的代理
+            "dest": {{FALL_BACK_PORT}} // 默认回落到防探测的代理
           }
         ]
       },

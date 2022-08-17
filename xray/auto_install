@@ -1,0 +1,118 @@
+DOMAIN_NAME_OLD=xyz.zqslzwzw.tk
+DOMAIN_NAME=xyz.zqslzwzw.ml
+USER=zqslzwzw
+NGINX_ROOT_PATH=/home/${USER}/www/webpage
+NGINX_ROOT_PATH_ESCAPED=`echo $NGINX_ROOT_PATH | sed 's#\/#\\\/#g'`
+CER_INSTALL_PATH=/home/$USER/xray_cert
+CER_INSTALL_PATH_ESCAPED=`echo $CER_INSTALL_PATH | sed 's#\/#\\\/#g'`
+XRAY_LOG_PATH=/home/$USER/xray_log
+XRAY_LOG_PATH_ESCAPED=`echo $XRAY_LOG_PATH | sed 's#\/#\\\/#g'`
+FALL_BACK_PORT=8080
+
+# 建立nginx目录
+mkdir -p ~/www/webpage/ 
+nano ~/www/webpage/index.html
+wget -qO ~/www/webpage/index.html https://raw.githubusercontent.com/lonecrane/seedbox/blob/master/nginx/index.html
+
+
+# conf文件损坏或是丢失，直接覆盖或重新安装不会重新生成。
+# wget -qO /etc/nginx/nginx.conf https://raw.githubusercontent.com/lonecrane/seedbox/master/nginx/nginx.conf
+sudo apt-get --purge remove nginx
+sudo apt-get autoremove
+dpkg --get- selections | grep nginx
+sudo apt-get --purge remove nginx-common
+sudo apt-get install nginx
+
+# cp /etc/nginx/nginx.conf nginx.conf
+sudo wget -qO nginx.conf https://raw.githubusercontent.com/lonecrane/seedbox/master/nginx/nginx.conf
+
+
+# 
+sed -n "/http{/,/}/p" nginx.conf
+sed -n '/begin/,/end/p' 1.txt
+
+# 多行文本
+read -d '' server <<- EOF
+        server {
+            listen 80;
+            server_name {{DOMAIN_NAME}};
+            return 301 https://$http_host$request_uri;
+            # root {{NGINX_ROOT_PATH}};
+            # index index.html;
+        }
+		
+        server {
+            listen 127.0.0.1:{{FALL_BACK_PORT}};
+            root {{NGINX_ROOT_PATH}};
+            index index.html;
+            add_header Strict-Transport-Security "max-age=63072000" always;
+        }
+EOF
+
+# nginx配置
+# 更新域名
+# sudo nano /etc/nginx/nginx.conf
+sed -n -e "s/{{DOMAIN_NAME}}/$DOMAIN_NAME/gp" -e "s/{{NGINX_ROOT_PATH}}/$NGINX_ROOT_PATH_ESCAPED/gp" -e "s/{{FALL_BACK_PORT}}/$FALL_BACK_PORT/gp" nginx.conf # “sed -n 和 -i 不要一起用 sed -n如果没有输出,那么加上一个 -i会直接清空目标文件。”
+sed -i -e "s/{{DOMAIN_NAME}}/$DOMAIN_NAME/g" -e "s/{{NGINX_ROOT_PATH}}/$NGINX_ROOT_PATH_ESCAPED/g" -e "s/{{FALL_BACK_PORT}}/$FALL_BACK_PORT/g" nginx.conf  # 实际修改文件
+sudo mv nginx.conf /etc/nginx/nginx.conf
+sudo chown root.root /etc/nginx/nginx.conf
+sudo systemctl reload nginx
+
+# 证书
+wget -O -  https://get.acme.sh | sh
+. .bashrc
+acme.sh --upgrade --auto-upgrade
+
+acme.sh --issue --server letsencrypt --test -d $DOMAIN_NAME -w $NGINX_ROOT_PATH --keylength ec-256  # 测试一下
+acme.sh --set-default-ca --server letsencrypt
+acme.sh --issue -d $DOMAIN_NAME -w $NGINX_ROOT_PATH --keylength ec-256 --force  # 正式申请。--force 参数的意思就是，在现有证书到期前，手动（强行）更新证书
+
+# 安装证书
+## 建立证书保存目录
+mkdir $CER_INSTALL_PATH
+acme.sh --install-cert -d $DOMAIN_NAME --ecc \
+            --fullchain-file $CER_INSTALL_PATH/xray.crt \
+            --key-file $CER_INSTALL_PATH/xray.key
+
+# 安装Xray
+wget https://github.com/XTLS/Xray-install/raw/main/install-release.sh
+sudo bash install-release.sh
+rm ~/install-release.sh
+
+# 7.3 给 Xray 配置 TLS 证书
+chmod +r $CER_INSTALL_PATH/xray.key # xray.key文件默认对其他用户不可读，所以需要赋予其可读性权限
+
+
+# 7.4 配置 Xray
+# sudo nano /usr/local/etc/xray/config.json
+mkdir $XRAY_LOG_PATH
+touch $XRAY_LOG_PATH/access.log && touch $XRAY_LOG_PATH/error.log
+chmod a+w $XRAY_LOG_PATH/*.log
+
+# 生成uuid
+UUID=`xray uuid` # 形如UUID=d60c94cd-f573-42f5-acd3-fddc43a814cb
+
+# sudo nano /usr/local/etc/xray/config.json
+wget -qO xray_config.json https://raw.githubusercontent.com/lonecrane/seedbox/master/xray/config.json
+## 测试替换是否正常
+ # “sed -n 和 -i 不要一起用 sed -n如果没有输出,那么加上一个 -i会直接清空目标文件。”
+sed -n "s/{{XRAY_LOG_PATH}}/$XRAY_LOG_PATH_ESCAPED/gp" xray_config.json
+sed -n "s/{{UUID}}/$UUID/gp" xray_config.json
+sed -n "s/{{CER_INSTALL_PATH}}/$CER_INSTALL_PATH_ESCAPED/gp" xray_config.json
+sed -n "s/{{FALL_BACK_PORT}}/$FALL_BACK_PORT/gp" xray_config.json
+## 修改生效
+sed -i "s/{{XRAY_LOG_PATH}}/$XRAY_LOG_PATH_ESCAPED/g" xray_config.json
+sed -i "s/{{UUID}}/$UUID/g" xray_config.json
+sed -i "s/{{CER_INSTALL_PATH}}/$CER_INSTALL_PATH_ESCAPED/g" xray_config.json
+sed -i "s/{{FALL_BACK_PORT}}/$FALL_BACK_PORT/g" xray_config.json
+sudo chown root.root xray_config.json
+
+sudo systemctl stop xray
+sudo mv xray_config.json /usr/local/etc/xray/config.json
+sudo systemctl start xray
+# sudo systemctl status xray
+sudo systemctl enable xray
+
+
+1、仅IP失效，只需要在freenom更新域名的指向
+2、域名失效则需要重新生成/安装证书
